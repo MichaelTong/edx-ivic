@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+{% block title %} <title>Edx2iVIC</title> {% endblock %}
+{% block links %}<link href="/static/css/main.css" rel="stylesheet" type="text/css" /> {% endblock %}
+</head>
+
+<body>
+<div class="header-wrapper" style="position:relative">
+    <div id="header" class="contianer">
+      <h1><strong>From Edx to iVIC</strong></h1>
+    </div>
+</div>
+<div class="wrapper" style="position:relative">        
+    <div class="back1">
+		<div class="sidebar" id="sidebar">
+		{% block sidebar %}
+		
+		{% endblock %}
+		</div>
+		<div class="content" id="content">
+		<div>
+			<h2>
+				{% block ctitle %}
+				Welcome!
+				{% endblock %}
+			</h2>
+		</div>
+		{% block content %}
+			  <p>This is a middle server to connect edx-platfrom with iVIC.</p>
+			  <p>Here, once you have signed up and been authorized, you can publish templates for virtual machines used by iVIC.</p>
+		{% endblock %}
+		</div>
+	</div>
+</div>
+{% block footer %}
+<div class="footer-wrapper" style="position:relative">
+	<div id="copyright" style="position:relative">
+		<p>Copyright (c) 2014 <a href="http://michael-tong.com/">Michael Tong</a>. All rights reserved.</p>
+</div>
+{% endblock %}
+</body>
+</html>

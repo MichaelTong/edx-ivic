@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block ctitle %}
+MY TEMPLATES
+{% endblock %}
+{% block content %}
+          <ul class = "t-list" id = "t-title">
+             <li>Name</li>
+             <li>OS Type</li>
+             <li>Distribution</li>
+             <li>Deploy Method</li>
+             <li>Created at</li>
+           </ul>
+           {% for template in templates.object_list %}
+           <ul class = "t-item">
+             <li><a href="../template/{{ template.id}}" ><b>{{ template.name }}</a></b></li> 
+             <li>{{ template.os_type }}</li>
+             <li>{{ template.distribution }}</li>
+             <li>{{ template.deploy_method }}</li>
+             <li>{{ template.create_time }}</li>
+           </ul>
+           {% endfor %}
+           <div class="paginator">
+                <p>
+                  {% for page_number in templates.paginator.page_range %}
+                    {% ifequal page_number  templates.number %}
+                      {{ page_number }}
+                    {% else %}
+                      <a href="?page={{ page_number }}">{{ page_number }}</a>
+                    {% endifequal %}
+                  {% endfor %}
+                </p>
+           </div>
+{% endblock %}

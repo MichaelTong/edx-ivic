@@ -7,10 +7,16 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'djangoapp.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
+    url(r'^profile/$','djangoapp.views.profile'),
+    url(r'^template/(?P<tp>.*)/$','djangoapp.views.template'), #use 32 code
     url(r'^admin/', include(admin.site.urls)),
 )
+
+urlpatterns += patterns('',
+    url(r'^signup/$','djangoapp.views.signup'),
+    url(r'^login/$','djangoapp.vmtemplates.verification.signin'),
+)
+
 
 if settings.DEBUG:
     urlpatterns += patterns('',

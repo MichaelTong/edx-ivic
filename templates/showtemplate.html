@@ -1,0 +1,61 @@
+{% extends "profile.html" %}
+{% block ctitle %}
+TEMPLATE DETAILS
+{% endblock %}
+{% block content %}
+        <div style="font: 12px">
+            <table width="70%" border="0" >
+              <tr>
+                <td><b>Name</b></td>
+                <td>{{ template.name }}</td>
+              </tr>
+              <tr>
+                <td><b>Created by</b></td>
+                <td>{{ template.create_user.username }}</td>
+              </tr><tr>
+                <td><b>OS Type</b></td>
+                <td>{{ template.os_type }}</td>
+              </tr><tr>
+                <td><b>Distribution</b></td>
+                <td>{{ template.distribution }}</td>
+              </tr><tr>
+                <td><b>Deploy Method</b></td>
+                <td>{{ template.deploy_method }}</td>
+              </tr><tr>
+                <td><b>Kernel</b></td>
+                <td>{{ template.kernel }}</td>
+              </tr><tr>
+                <td><b>Node Type</b></td>
+                <td>{{ template.node_type }}</td>
+              </tr><tr>
+                <td><b>Capabilities</b></td>
+                <td>{{ template.capabilities }}</td>
+              </tr><tr>
+                <td><b>Perferred Memory(MB)</b></td>
+                <td>{{ template.memory }}</td>
+              </tr><tr>
+                <td><b>Perferred Disk Size(GB)</b></td>
+                <td>{{ template.disk }}</td>
+              </tr><tr>
+                <td><b>Repository</b></td>
+                <td>{{ template.repository }}</td>
+              </tr>
+              <tr>
+                <td><b>Deploy URL</b></td>
+                <td>{{ template.deploy_url }}</td>
+              </tr>
+              <tr>
+                <td><b>Description</b></td>
+                <td>{{ template.description }}</td>
+              </tr>
+              <tr>
+                <td><b>Filename</b></td>
+                <td>{{ template.filename }}</td>
+              </tr>
+            </table>
+            </div>
+            <div>
+            <input class="button1" type="button" name="reqpage" id="reqpage" value="Show Request Page" />
+            <input class="button2" type="button" name="deltp" id="deltp" value="Delete" />
+            </div>
+{% endblock %}
