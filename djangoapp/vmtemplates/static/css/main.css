@@ -10,6 +10,16 @@ body{
 	font-family: 'Questrial', sans-serif;
 	min-width: 800px;
 }
+a
+{
+	text-decoration: none;
+	color: #2056ac;
+}
+
+a:hover
+{
+	text-decoration: none;
+}
 .sidebar {
 	font-size: 20px;
 	font-style: normal;
@@ -52,13 +62,25 @@ body{
 	font-size: 0.5em;
 	color: #FFF;
 	margin-top: 1em;
-	text-align = center;
 }
 #header {
 	color: #FFF;
 	text-align: center;
+    padding: 4em 0em 2em 0em;
+}
+#header h1
+{
+ 	display: block;
+	margin-bottom: 0.20em;
+	padding: 0.20em 0.9em;
+	font-size: 3.5em;
 }
 
+#header a
+{
+	text-decoration: none;
+	color: #FFF;
+}
 .header-wrapper
 {
 	margin-left: auto;

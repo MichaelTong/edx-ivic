@@ -1,0 +1,42 @@
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $("#check").click(function(){
+    $.getJSON("../check/",
+              {username:$("#username").val()},
+              function(data){
+                  alert(data.msg);
+              });
+    });
+  });
+</script>
+
+<p>Sign Up NOW!</p>
+<button id="check">Check username</button>
+<form action="" method="post"/>
+{% csrf_token %}
+<table width="100%" border="0">
+    <tr>
+        <td width="33%">Username:</td>
+        <td width="67%"><input type="text" name="username" value="{{ username }}" id="username" /></td>
+    </tr>
+    <tr>
+        <td>Password:</td>
+        <td><input type="password" name="password" value="" id="password" /></td>
+    </tr>
+    <tr>
+        <td>Confirm:</td>
+        <td><input type="password" name="rpassword" value="" id="rpassword" /></td>
+    </tr>
+    <tr>
+        <td>Email:</td>
+        <td><input type="email" name="email" value="" id="email" /></td>
+    </tr>
+</table>
+<div>
+    <input type="submit" class="button1" value="Confirm" />
+    <input type="button" class="button2" name="cancel" id="canel" value="Cancel" onclick="location.href='..'"/>
+    <input type="hidden" name="next" value="{{ next|escape }}" />
+</div>
+</form>
+<p style="font-size:11px;color:red">{{ msg }}</p>

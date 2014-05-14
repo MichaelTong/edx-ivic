@@ -1,44 +1,55 @@
 from django.http import HttpRequest
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib import auth
 import json
 
 def check_username(request):
-	if request.method == 'GET':
-		try:
-			user = User.objects.get(username = request.GET['username']);
-			if user is not None:
-				return HttpResponse(json.dumps({'msg':'Username existed'}))
-		except:
-			return HttpResponse(json.dumps({'msg':'Username availiable'}))
+   if request.method == 'GET':
+      username = request.GET.get('username','')
+      if username == '':
+          return HttpResponse(json.dumps({'msg':'Username invalid'}))
+      try:
+         user = User.objects.get(username = username)
+         if user is not None:
+            return HttpResponse(json.dumps({'msg':'Username existed'}))
+      except:
+         return HttpResponse(json.dumps({'msg':'Username availiable'}))
 
 def register(request):
-	if request.method == 'GET':
-		username = request.GET['username']
-		password = request.GET['password']
-		rpassword = request.GET['rpassword']
-		email = request.GET['email']
-		if password != rpassword:
-			return HttpResponse(json.dumps({'msg':'Two passwords do not match'}))
-		user = User.objects.create_user(username, email, password)
-		if user is not None:
-			user.save()
-			return HttpResponse(json.dumps({'msg':'ok'}))
-		else:
-			return HttpResponse(json.dumps({'msg':'Sign up failed'}))
+    print request
+    if request.method == 'POST':
+        username = request.POST.get('username','')
+        password = request.POST.get('password','')
+        rpassword = request.POST.get('rpassword','')
+        email = request.POST.get('email','')
+        if username == '':
+            return render(request,'signup.html',{'msg':'Invaild username'})
+        if password != rpassword:
+            return render(request,'signup.html',{'msg':'Two passwords do not match','username':username})
+        user = User.objects.create_user(username, email, password)
+        if user is not None:
+            user.save()
+            return HttpResponseRedirect("../")
+        else:
+            return render(request,'signup.html',{'msg':'Sign up failed','username':username})
 
 def signin(request):
-	username = request.GET['username']
-	password = request.GET['password']
-	user = auth.authenticate(username = username, password = password)
-	if user is not None:
-		if user.is_active:
-			auth.login(request, user)
-			return HttpResponseRedirect("../profile/")
-		else:
-			return HttpResponse(json.dumps({'msg':'User is not active'}))
-	else:
-		return HttpResponse(json.dumps({'msg':'Sign in failed'}))
+    username = request.POST.get('username','')
+    password = request.POST.get('password','')
+    user = auth.authenticate(username = username, password = password)
+    if user is not None:
+        if user.is_active:
+            auth.login(request, user)
+            return HttpResponseRedirect("../profile/")
+        else:
+            return render(request,'home.html',{'msg':'User is not active','username':username})
+    else:
+        return render(request,'home.html',{'msg':'Sign in failed','username':username})
 
+
+def signout(request):
+    auth.logout(request)
+    return HttpResponseRedirect("/")

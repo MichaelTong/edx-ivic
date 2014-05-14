@@ -8,15 +8,18 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'djangoapp.views.home', name='home'),
     url(r'^profile/$','djangoapp.views.profile'),
-    url(r'^template/(?P<tp>.*)/$','djangoapp.views.template'), #use 32 code
+    url(r'^template/(?P<tp>[A-Za-z0-9]{8}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{12})/$','djangoapp.views.template'),
+    url(r'^add/$','djangoapp.views.add'),
     url(r'^admin/', include(admin.site.urls)),
 )
 
 urlpatterns += patterns('',
     url(r'^signup/$','djangoapp.views.signup'),
-    url(r'^login/$','djangoapp.vmtemplates.verification.signin'),
-)
+    url(r'^check/$','djangoapp.vmtemplates.verification.check_username'),
+    url(r'^logout/$','djangoapp.vmtemplates.verification.signout'),
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'home.html'}),
 
+)
 
 if settings.DEBUG:
     urlpatterns += patterns('',

@@ -1,36 +1,22 @@
-<script type="text/javascript" src="/static/js/jquery.min.js"></script>
-
-<script type="text/javascript">
-$('document').ready(function(){
-   $('#login').click(function(){
-      $.getJSON("login/",
-               {
-                  'username':$('#username').val(),
-                  'password':$('#password').val()
-               },
-               function(json){ 
-                 if(json!=null)
-			alert(json.msg);
-               });
-   });
-});
-</script>             
 <p>
-                        Get what you want NOW.
-                        </p>
-                          <table width="100%" border="0">
-                                <tr>
-                                  <td width="33%">username</td>
-                                  <td width="67%">
-                                        <input type="text" name="username" id="username" /></td>
-                                </tr>
-                                <tr>
-                                  <td>password</td>
-                                  <td><label for="password"></label>
-                                  <input type="password" name="password" id="password" /></td>
-                                </tr>
-                          </table>
-                          <p>
-                                <input class="button1" type="button" name="login" id="login" value="Sign in" />
-                                <a href="/signup/"> <input class="button1" type="button" name="signup" id="signup" value="Sign up" /></a>
-                          </p>
+   Get what you want NOW.
+</p>
+<form action="" method="post">
+    {% csrf_token %}
+    <table width="100%" border="0">
+        <tr>
+            <td width="33%">Username:</td>
+            <td width="67%"><input type="text" name="username" value="{{ username }}" id="username" /></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="password" name="password" value="" id="password" /></td>
+        </tr>
+    </table>
+    <div>
+        <input type="submit" class="button1" value="Sign In" />
+        <input type="hidden" name="next" value="{{ next|escape }}" />
+        <input type="button" class="button2" name="signup" id="signup" value="Sign Up" onclick="location.href='signup/'"/>
+    </div>
+    <p style="font-size:11px;color:red">{{ msg }}</p>
+</form>

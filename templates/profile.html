@@ -1,7 +1,9 @@
-{% extends "base.html" %}
+{% extends "in.html" %}
+
 {% block ctitle %}
 MY TEMPLATES
 {% endblock %}
+
 {% block content %}
           <ul class = "t-list" id = "t-title">
              <li>Name</li>
@@ -12,7 +14,7 @@ MY TEMPLATES
            </ul>
            {% for template in templates.object_list %}
            <ul class = "t-item">
-             <li><a href="../template/{{ template.id}}" ><b>{{ template.name }}</a></b></li> 
+             <li><a href="{{ site }}/template/{{ template.filename }}" ><b>{{ template.name }}</a></b></li> 
              <li>{{ template.os_type }}</li>
              <li>{{ template.distribution }}</li>
              <li>{{ template.deploy_method }}</li>
