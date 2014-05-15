@@ -8,7 +8,10 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'djangoapp.views.home', name='home'),
     url(r'^profile/$','djangoapp.views.profile'),
-    url(r'^template/(?P<tp>[A-Za-z0-9]{8}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{12})/$','djangoapp.views.template'),
+    url(r'^profile/(?P<username>.+)/template/(?P<tp>[A-Za-z0-9]{8}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{12})/$','djangoapp.views.template'),
+    url(r'^profile/(?P<username>.+)/template/(?P<tp>[A-Za-z0-9]{8}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{12})/delete/$','djangoapp.views.delete'),
+    url(r'^profile/(?P<username>.+)/template/(?P<tp>[A-Za-z0-9]{8}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{12})/request/$','djangoapp.views.tpreq'),
+    url(r'^profile/(?P<username>.+)/template/(?P<tp>[A-Za-z0-9]{8}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{4}\-[A-Za-z0-9]{12})/howtoadd/$','djangoapp.views.tphowto'),
     url(r'^add/$','djangoapp.views.add'),
     url(r'^admin/', include(admin.site.urls)),
 )

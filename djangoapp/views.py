@@ -32,7 +32,7 @@ def profile(request):
     return render_to_response('profile.html',{'templates':templates,'username':user.username})
 
 @login_required
-def template(request, tp):
+def template(request,username, tp):
     try:
         user = request.user
         template = VMTemplate.objects.get(filename = tp, create_user = user)
@@ -42,18 +42,86 @@ def template(request, tp):
 
 @login_required
 def add(request):
+    user = request.user
     if request.method == 'POST':
         rawDict = loadFromRequest(request)
+	msg=''
+	if rawDict['name']=='':
+	    msg += 'name '
+	if rawDict['os_type']=='':
+	    msg += 'os_type '
+	if rawDict['distribution']=='':
+	    msg += 'distribution '
+	if rawDict['deploy_method']=='':
+	    rawDict['deploy_method'] = 'nfsmount'
+	if rawDict['kernel']=='':
+	    msg += 'kernel '
+	if rawDict['node_type']=='':
+	    rawDict['node_type'] = 'undefined '
+	if rawDict['capabilities']=='':
+	    rawDict['capabilities'] = 'vNode '
+	if rawDict['memory'] == 0:
+	    msg += 'memory '
+	if rawDict['disk'] ==0 :
+	    msg += 'disk '
+	if rawDict['repository']=='':
+	    msg += 'repository '
+	if rawDict['deploy_url']=='':
+	    msg += 'deploy_url '
+	if rawDict['description']=='':
+	    rawDict['description'] = 'No Discription'
+        if msg != '':
+            msgDict = rawDict.copy()
+            msgDict['msg']=msg+"need to be corrected!"
+            msgDict['username']= user.username
+            return render(request,'add.html',msgDict)
         filename = hashFilename(rawDict)
         print rawDict
-        new_template = createNew(rawDict,filename)
-        redirect_url = "../template/"+filename+"/"
-        return HttpResponseRedirect(redirect_url)
+        try:
+            new_template = createNew(rawDict,filename)
+            redirect_url = "../profile/"+user.username+"/template/"+filename+"/"
+            return HttpResponseRedirect(redirect_url)
+        except:
+            msg = 'Failed to create new template. You perhaps have created a same template.'
+            msgDict = rawDict.copy()
+            msgDict['msg'] = msg
+            msgDict['username'] = user.username
+            return render(request, 'add.html',msgDict)
     else:
-        user = request.user
         t = get_template('add.html')
         return render(request, 'add.html', {'username':user.username,'deploy_method':'nfsmount','node_type':'undefined','capabilities':'vNode'})
-    
+
+@login_required
+def delete(request, username, tp):
+    user = request.user
+    if username != user.username:
+        return render(request, 'showdenied.html', { 'username':username })
+    try:
+        template = VMTemplate.objects.get(create_user=user, filename = tp)
+        template.delete()
+        return HttpResponseRedirect('../../../../')
+    except:
+        return render(request, 'showdenied.html',{'username':username})
+
+@login_required
+def tphowto(request, username, tp):
+    user = request.user
+    try:
+        template = VMTemplate.objects.get(create_user=user, filename = tp)
+        return render(request, 'tphowto.html',{'username':username, 'template':template})
+    except:
+        return render(request, 'showdenied.html',{'username':username})
+
+
+@login_required
+def tpreq(request, username, tp):
+    user = request.user
+    try:
+        template = VMTemplate.objects.get(create_user=user, filename = tp)
+        return render(request, 'tpreq.html',{'username':username,'template':template})
+    except:
+        return render(request, 'showdenied.html',{'username':username})
+
 def signup(request):
    if request.method == 'POST':
       return verification.register(request)

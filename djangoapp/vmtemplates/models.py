@@ -27,8 +27,16 @@ def loadFromRequest(request):
     kernel = request.POST.get('kernel')
     node_type = request.POST.get('node_type')
     capabilities = request.POST.get('capabilities')
-    memory = int(request.POST.get('memory'))
-    disk = int(request.POST.get('disk'))
+    m = request.POST.get('memory')
+    try:
+        memory = int(m)
+    except:
+        memory = 0
+    d = request.POST.get('disk')
+    try:
+        disk = int(d)
+    except:
+        disk = 0
     repository = request.POST.get('repository')
     deploy_url = request.POST.get('deploy_url')
     description = request.POST.get('description')
@@ -45,5 +53,10 @@ def hashFilename(dict):
     return filename
 
 def createNew(dict, filename):
-    new_tp = VMTemplate.objects.create(name = dict['name'], os_type = dict['os_type'], distribution = dict['distribution'], deploy_method = dict['deploy_method'], kernel = dict['kernel'], node_type = dict['node_type'], capabilities = dict['capabilities'], memory = dict['memory'], disk = dict['disk'], repository = dict['repository'], deploy_url = dict['deploy_url'], description = dict['description'], create_user = dict['create_user'],filename = filename)
-    return new_tp
+    try:
+        t = VMTemplate.objects.get(filename = filename)
+        if t is not None:
+            return t
+    except:
+        new_tp = VMTemplate.objects.create(name = dict['name'], os_type = dict['os_type'], distribution = dict['distribution'], deploy_method = dict['deploy_method'], kernel = dict['kernel'], node_type = dict['node_type'], capabilities = dict['capabilities'], memory = dict['memory'], disk = dict['disk'], repository = dict['repository'], deploy_url = dict['deploy_url'], description = dict['description'], create_user = dict['create_user'],filename = filename)
+        return new_tp

@@ -42,7 +42,7 @@ a:hover
 .content {
 	padding-top: 10px;
 	padding-right: 0.1em;
-	padding-bottom: 10px;
+	padding-bottom: 50px;
 	padding-left: 0.1em;
 	height: 500px;
 }
@@ -95,7 +95,7 @@ a:hover
 	margin-left: auto;
 	margin-right: auto;
 	overflow: hidden;
-	padding: 0em 0em 5em 0em;
+	padding: 0em 0em 7em 0em;
 	width: 100%;
 	background: #fff;
 	height: 500px;

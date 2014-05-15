@@ -57,7 +57,9 @@ TEMPLATE DETAILS
             </table>
             </div>
             <div>
-            <input class="button1" type="button" name="reqpage" id="reqpage" value="Show Request Page" />
-            <input class="button2" type="button" name="deltp" id="deltp" value="Delete" />
+            <a href="request/"><button class="button1" name="reqpage" id="reqpage">Show Request Page</button></a>
+            <a href="howtoadd/"><button class="button1" name="addtocourse" id="addtocourse">Add to Course</button></a>
+            <a href="{{ site }}/"><button class="button1" name="back" id="back">Back</button></a>
+            <a href="javascript:if(confirm('Are you sure to delete it?')) location='delete'"><input class="button2" type="button" name="deltp" id="deltp" value="Delete" /></a>
             </div>
 {% endblock %}
