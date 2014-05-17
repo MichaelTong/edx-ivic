@@ -1,18 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-{% block title %} <title>Edx2iVIC</title> {% endblock %}
-<script type="text/javascript" src="/static/js/jquery.min.js"></script>
-{% block links %}<link href="/static/css/main.css" rel="stylesheet" type="text/css" /> {% endblock %}
-</head>
+
+{% include "includes/head.html" %}
 
 <body>
-<div class="header-wrapper" style="position:relative">
-    <div id="header" class="contianer">
-      <h1><strong><a href="{{ site }}/">From Edx to iVIC</a></strong></h1>
-    </div>
-</div>
+{% include "includes/header.html" %}
+
 <div class="wrapper" style="position:relative">        
     <div class="back1">
 		<div class="sidebar" id="sidebar">
@@ -35,11 +28,9 @@
 		</div>
 	</div>
 </div>
+
 {% block footer %}
-<div class="footer-wrapper" style="position:relative">
-	<div id="copyright" style="position:relative">
-		<p>Copyright (c) 2014 <a href="http://michael-tong.com/">Michael Tong</a>. All rights reserved.</p>
-</div>
+{% include "includes/footer.html" %}
 {% endblock %}
 </body>
 </html>
