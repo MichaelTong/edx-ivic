@@ -107,3 +107,7 @@ WS4REDIS_HEARTBEAT = '--heartbeat--'
 
 SESSION_ENGINE = 'redis_sessions.session'
 SESSION_REDIS_PREFIX = 'session'
+
+QUEUE_PORT = '6000'
+
+AUTHKEY = 'listener'
