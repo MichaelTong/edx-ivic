@@ -13,6 +13,14 @@ CREATE A NEW TEMPLATE
                  <td><input type="text" name="name" value="{{name}}" id="name" /></td>
              </tr>
              <tr>
+                 <td><b>Description</b></td>
+                 <td><input type="text" name="description" value="{{description}}" id="description" /></td>
+             </tr>
+             <tr>
+                 <td><b>Capabilities (Default '&lt;vNode/&gt;')</b></td>
+                 <td><input type="text" name="capabilities" value="{{capabilities}}" id="capabilities" /></td>
+             </tr>
+             <tr>
                  <td><b>OS Type</b></td>
                  <td><input type="text" name="os_type" value="{{os_type}}" id="os_type" /></td>
              </tr>
@@ -21,20 +29,20 @@ CREATE A NEW TEMPLATE
                  <td><input type="text" name="distribution" value="{{distribution}}" id="distribution" /></td>
              </tr>
              <tr>
-                 <td><b>Deploy Method (Default 'nfsmount')</b></td>
-                 <td><input type="text" name="deploy_method" value="{{deploy_method}}" id="deploy_method" /></td>
+                 <td><b>Release</b></td>
+                 <td><input type="text" name="release" value="{{release}}" id="release" /></td>
              </tr>
              <tr>
                  <td><b>Kernel</b></td>
                  <td><input type="text" name="kernel" value="{{kernel}}" id="kernel" /></td>
              </tr>
              <tr>
-                 <td><b>Node Type (Default 'undefined')</b></td>
-                 <td><input type="text" name="node_type" value="{{node_type}}" id="node_type" /></td>
+                 <td><b>Packages (Default 'base-files')</b></td>
+                 <td><input type="text" name="packages" value="{{packages}}" id="packages" /></td>
              </tr>
              <tr>
-                 <td><b>Capabilities (Default 'vNode')</b></td>
-                 <td><input type="text" name="capabilities" value="{{capabilities}}" id="capabilities" /></td>
+                 <td><b>Repository (Default 'local')</b></td>
+                 <td><input type="text" name="repository" value="{{repository}}" id="repository" /></td>
              </tr>
              <tr>
                  <td><b>Perferred Memory (MB, Only integer)</b></td>
@@ -45,16 +53,20 @@ CREATE A NEW TEMPLATE
                  <td><input type="text" name="disk" value="{{disk}}" id="disk" /></td>
              </tr>
              <tr>
-                 <td><b>Repository</b></td>
-                 <td><input type="text" name="repository" value="{{repository}}" id="repository" /></td>
+                 <td><b>NewConfig (Default 'something')</b></td>
+                 <td><input type="text" name="newconfig" value="{{newconfig}}" id="newconfig" /></td>
+             </tr>
+             <tr>
+                 <td><b>Deploy Method (Default 'nfsmount')</b></td>
+                 <td><input type="text" name="deploy_method" value="{{deploy_method}}" id="deploy_method" /></td>
              </tr>
              <tr>
                  <td><b>Deploy URL</b></td>
                  <td><input type="text" name="deploy_url" value="{{deploy_url}}" id="deploy_url" /></td>
              </tr>
              <tr>
-                 <td><b>Description</b></td>
-                 <td><input type="text" name="description" value="{{description}}" id="description" /></td>
+                 <td><b>COWDir</b></td>
+                 <td><input type="text" name="cowdir" value="{{cowdir}}" id="cowdir" /></td>
              </tr>
          </table>
      </div>
@@ -64,5 +76,5 @@ CREATE A NEW TEMPLATE
          <input type="hidden" name="next" value="{{ next|escape }}" />
      </div>
 </form>
-<p style="color:red">{{ msg }}<p> 
+<p style="color:red"><b>{{ msg }}</b></p> 
 {% endblock %}

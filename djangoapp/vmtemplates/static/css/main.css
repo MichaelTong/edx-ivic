@@ -44,7 +44,7 @@ a:hover
 	padding-right: 0.1em;
 	padding-bottom: 50px;
 	padding-left: 0.1em;
-	height: 500px;
+	height: 100%;
 }
 .button1 {
 	width: 25%;
@@ -98,7 +98,7 @@ a:hover
 	padding: 0em 0em 7em 0em;
 	width: 100%;
 	background: #fff;
-	height: 500px;
+	height: 600px;
 	text-align=center;
 }
 .button1 {

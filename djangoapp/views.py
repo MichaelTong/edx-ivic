@@ -1,7 +1,7 @@
 from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.core.paginator import Paginator, EmptyPage,PageNotAnInteger
-from vmtemplates.models import VMTemplate,loadFromRequest,hashFilename,createNew
+from vmtemplates.models import VMTemplate,loadFromRequest,hashFilename,createNew,exsit
 from vmtemplates import verification
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -47,49 +47,62 @@ def add(request):
         rawDict = loadFromRequest(request)
 	msg=''
 	if rawDict['name']=='':
-	    msg += 'name '
-	if rawDict['os_type']=='':
-	    msg += 'os_type '
-	if rawDict['distribution']=='':
-	    msg += 'distribution '
-	if rawDict['deploy_method']=='':
-	    rawDict['deploy_method'] = 'nfsmount'
-	if rawDict['kernel']=='':
-	    msg += 'kernel '
-	if rawDict['node_type']=='':
-	    rawDict['node_type'] = 'undefined '
-	if rawDict['capabilities']=='':
-	    rawDict['capabilities'] = 'vNode '
-	if rawDict['memory'] == 0:
-	    msg += 'memory '
-	if rawDict['disk'] ==0 :
-	    msg += 'disk '
-	if rawDict['repository']=='':
-	    msg += 'repository '
-	if rawDict['deploy_url']=='':
-	    msg += 'deploy_url '
+	    msg += 'Name '
 	if rawDict['description']=='':
 	    rawDict['description'] = 'No Discription'
+	if rawDict['capabilities']=='':
+	    rawDict['capabilities'] = '<vNode/>'
+	if rawDict['os_type']=='':
+	    msg += 'OSType '
+	if rawDict['distribution']=='':
+	    msg += 'Distribution '
+	if rawDict['release']=='':
+	    msg += 'Release '
+	if rawDict['kernel']=='':
+	    msg += 'Kernel '
+	if rawDict['packages']=='':
+	    rawDict['packages'] = 'base-files'
+	if rawDict['repository']=='':
+	    rawDict['repository'] = 'local'
+	if rawDict['memory'] == 0:
+	    msg += 'Memory '
+	if rawDict['disk'] ==0 :
+	    msg += 'Disk '
+	if rawDict['newconfig']=='':
+	    rawDict['newconfig'] = 'something'
+	if rawDict['deploy_method']=='':
+	    rawDict['deploy_method'] = 'nfsmount'
+	if rawDict['deploy_url']=='':
+	    msg += 'DeployUrl '
+	if rawDict['cowdir']=='':
+	    msg += 'COWDir '
         if msg != '':
             msgDict = rawDict.copy()
             msgDict['msg']=msg+"need to be corrected!"
             msgDict['username']= user.username
             return render(request,'add.html',msgDict)
         filename = hashFilename(rawDict)
-        print rawDict
-        try:
-            new_template = createNew(rawDict,filename)
-            redirect_url = "../profile/"+user.username+"/template/"+filename+"/"
-            return HttpResponseRedirect(redirect_url)
-        except:
+        if exsit(filename):
             msg = 'Failed to create new template. You perhaps have created a same template.'
             msgDict = rawDict.copy()
             msgDict['msg'] = msg
             msgDict['username'] = user.username
-            return render(request, 'add.html',msgDict)
+            return render(request, 'add.html', msgDict)
+        else:
+            new_template = createNew(rawDict,filename)
+            if new_template is not None:
+                redirect_url = "../profile/"+user.username+"/template/"+filename+"/"
+                return HttpResponseRedirect(redirect_url)
+            else:
+                msg = 'Failed to create new template.'
+                msgDict = rawDict.copy()
+                msgDict['msg'] = msg
+                msgDict['username'] = user.username
+                return render(request, 'add.html', msgDict)
     else:
         t = get_template('add.html')
-        return render(request, 'add.html', {'username':user.username,'deploy_method':'nfsmount','node_type':'undefined','capabilities':'vNode'})
+        return render(request, 'add.html', {'username':user.username,'deploy_method':'nfsmount','packages':'base-files','capabilities':'<vNode/>','repository':'local','newconfig':'something'
+})
 
 @login_required
 def delete(request, username, tp):
