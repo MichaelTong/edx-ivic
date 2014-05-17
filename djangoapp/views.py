@@ -7,6 +7,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.template.loader import get_template
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
+from ws4redis.redis_store import RedisMessage
+from ws4redis.publisher import RedisPublisher
+from multiprocessing.connection import Client
+from djangoapp.settings import *
+
+def sentToQueue(item):
+    address = ('localhost',int(QUEUE_PORT))
+    conn = Client(address, authkey = AUTHKEY)
+    conn.send(item)
+    conn.close()
 
 def home(request):
    if request.user.is_authenticated():
@@ -127,13 +138,29 @@ def tphowto(request, username, tp):
 
 
 @login_required
+@csrf_exempt
 def tpreq(request, username, tp):
     user = request.user
-    try:
-        template = VMTemplate.objects.get(create_user=user, filename = tp)
-        return render(request, 'tpreq.html',{'username':username,'template':template})
-    except:
-        return render(request, 'showdenied.html',{'username':username})
+    if request.method == 'POST':
+
+        sessionid = request.COOKIES.get('sessionid')
+        method = request.POST.get('method')
+        template = request.POST.get('template')
+        redis_publisher = RedisPublisher(facility='foobar', sessions=[sessionid])
+        message = RedisMessage("1")# 1 Request Recieved
+        redis_publisher.publish_message(message)
+        msg = {'method':method,'sessionid':sessionid,'template':template}
+        try:
+            sentToQueue(msg)
+        except Exception,e:
+            print e
+        return HttpResponse('OK')
+    else:
+        try:
+            template = VMTemplate.objects.get(create_user=user, filename = tp)
+            return render(request, 'tpreq.html',{'username':username,'template':template})
+        except:
+            return render(request, 'showdenied.html',{'username':username})
 
 def signup(request):
    if request.method == 'POST':

@@ -6,5 +6,35 @@ REQUEST DEMO <a href="..">Back</a><br/>
 {% endblock %}
 
 {% block content %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/ws4redis.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        var ws4redis = WS4Redis({
+            uri: '{{ WEBSOCKET_URI }}foobar?subscribe-session',
+            receive_message: receiveMessage,
+            heartbeat_msg: {{ WS4REDIS_HEARTBEAT }}
+        });
 
+        // send request message to the server using Ajax
+        $('#send_request').click(function(){
+            $.post('',{ method: 'UP',template: '{{template.filename}}'});
+        });
+
+        function receiveMessage(msg){
+            if (msg == "1")
+                put = "Request received";
+            else if (msg == "2")
+                put = "Applying VM...";
+            else if (msg == "3")
+                put = "Applying Proxy...";
+            else if (msg == "4")
+                put = "Ready";
+            else 
+		put = "Error";
+            $('#billboard').append('<br/>'+put);
+        }
+    });
+</script>
+	<button id="send_request">Send Request</button>
+	<div id="billboard" style="margin: 10px;padding: 5px;	width: 600px;	height: 400px;	background-color: black;color: white;border: solid 2px green;overflow-y: auto;"></div>
 {% endblock %}

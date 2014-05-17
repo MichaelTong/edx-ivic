@@ -19,7 +19,7 @@ runlock = thread.allocate_lock()
 
 
 def msg_handler(msg):
-    if msg['ex'] == 'SHUTSELF':
+    if msg['method'] == 'SHUTSELF':
         return
     if msg['method'] == 'UP':
         sessionid = msg['sessionid']
@@ -69,7 +69,7 @@ class listen(threading.Thread):
         self.thread_stop = True
         log('Stopped listener thread')
         conn = Client(self.address, authkey = AUTHKEY)
-        conn.send({'ex':'SHUTSELF'})
+        conn.send({'method':'SHUTSELF'})
         conn.close()
         
 
