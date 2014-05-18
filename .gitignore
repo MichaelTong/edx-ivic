@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *~
+<F12>
 # C extensions
 *.so
 
@@ -52,4 +53,8 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
-data/db/sql
+data/db/*.sqlite
+data/xml/*.xml
+
+imgs/*.img
+imgs/*.iso

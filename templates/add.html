@@ -9,6 +9,13 @@ CREATE A NEW TEMPLATE
     <div style="font: 12px">
         <table width="70%" border="0" >
              <tr>
+                 <td><b>Base Image</b></td>
+                 <td><select name="image" id="image"/>{% for image in images %}
+                         <option value = "{{ image }}">{% firstof image %}</option>
+                     {%endfor%}
+                     </select></td>
+             </tr>
+             <tr>
                  <td><b>Name</b></td>
                  <td><input type="text" name="name" value="{{name}}" id="name" /></td>
              </tr>
@@ -57,17 +64,26 @@ CREATE A NEW TEMPLATE
                  <td><input type="text" name="newconfig" value="{{newconfig}}" id="newconfig" /></td>
              </tr>
              <tr>
-                 <td><b>Deploy Method (Default 'nfsmount')</b></td>
-                 <td><input type="text" name="deploy_method" value="{{deploy_method}}" id="deploy_method" /></td>
+                 <td><b>Deploy Method</b></td>
+                 <td><select name="method" id="method"/>{% for method in methods %}
+                         <option value = "{{ method }}">{% firstof method %}</option>
+                     {%endfor%}
+                     </select></td>
              </tr>
              <tr>
-                 <td><b>Deploy URL</b></td>
-                 <td><input type="text" name="deploy_url" value="{{deploy_url}}" id="deploy_url" /></td>
+                 <td><b>Deploy vStore</b></td>
+                 <td><select name="vstore" id="vstore" />{% for vstore in vstores %}
+                         <option value = "{{ vstore }}">{% firstof vstore %}</option>
+                     {% endfor %}
+                     </select>
+                 </td>
              </tr>
+<!-- Now the server holding cowdir is the same with deploy_url
              <tr>
                  <td><b>COWDir</b></td>
                  <td><input type="text" name="cowdir" value="{{cowdir}}" id="cowdir" /></td>
              </tr>
+-->
          </table>
      </div>
      <div>

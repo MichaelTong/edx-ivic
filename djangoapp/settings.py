@@ -59,7 +59,7 @@ WSGI_APPLICATION = 'djangoapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'data/db/sql'),
+        'NAME': os.path.join(BASE_DIR, 'data/db/database.sqlite'),
     }
 }
 
@@ -107,7 +107,26 @@ WS4REDIS_HEARTBEAT = '--heartbeat--'
 
 SESSION_ENGINE = 'redis_sessions.session'
 SESSION_REDIS_PREFIX = 'session'
-
+# Queue Configuration
 QUEUE_PORT = '6000'
-
 AUTHKEY = 'listener'
+
+# Proxy Configuration
+PROXY = (
+)
+
+
+# iVIC configuration
+METHODS = (
+    'nfsmount',
+)
+VSTORES = (
+    '192.168.1.160',
+)
+LOCAL_XML_DIR = os.path.join(BASE_DIR, 'data/xml')
+IMG_STORE = '192.168.1.160'
+IMG_DIR = '/var/lib/ivic/imgs'
+IMG_USERNAME = 'root'
+IMG_PASSWD = 'tong'
+VSTORE_USERNAME = 'root'
+VSTORE_PASSWD = 'tong'

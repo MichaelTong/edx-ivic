@@ -1,7 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
+from djangoapp.settings import *
 import datetime
-import hashlib
+from django.contrib.auth.models import User
+import os
+
 class VMTemplate(models.Model):
 # vTemplate uuid='filename'
 # Name
@@ -37,63 +39,44 @@ class VMTemplate(models.Model):
     # URL
     deploy_url = models.CharField(max_length=200, verbose_name='Deploy URL')
     # COWDir
-    cowdir = models.CharField(max_length=30, verbose_name='COWDir')
+    cowdir = models.CharField(max_length=200, verbose_name='COWDir')
 
 # Not In XML
     create_time = models.DateTimeField(default = datetime.datetime.now, verbose_name='Created Time')
     filename = models.CharField(max_length=64, blank=True, verbose_name='Filename') #Set as unique filename, and uuid. see hashFilename.
     create_user = models.ForeignKey(User, verbose_name='Creator')
 
-# get data in form.
-def loadFromRequest(request):
-    name = request.POST.get('name')
-    description = request.POST.get('description')
-    capabilities = request.POST.get('capabilities')
-    os_type = request.POST.get('os_type')
-    distribution = request.POST.get('distribution')
-    release = request.POST.get('release')
-    kernel = request.POST.get('kernel')
-    packages = request.POST.get('packages')
-    repository = request.POST.get('repository')
-    m = request.POST.get('memory')
-    try:
-        memory = int(m)
-    except:
-        memory = 0
-    d = request.POST.get('disk')
-    try:
-        disk = int(d)
-    except:
-        disk = 0
-    newconfig = request.POST.get('newconfig')
-    deploy_method = request.POST.get('deploy_method')
-    deploy_url = request.POST.get('deploy_url')
-    cowdir = request.POST.get('cowdir')
-    create_user = request.user
-    return {'name':name,'description':description,'capabilities':capabilities,'os_type':os_type,'distribution':distribution,'release':release,'kernel':kernel,'packages':packages,'repository':repository,'memory':memory,'disk':disk, 'newconfig':newconfig,'deploy_method':deploy_method,'deploy_url':deploy_url,'cowdir':cowdir,'create_user':create_user}
+    def dumps(self):
+        content = "<?xml version=\"1.0\" ?>"
+        content += "<vTemplate uuid=\"" + self.filename +"\">\n"
+        content += " <Name>\n  " + self.name + "\n </Name>\n"
+        content += " <Description>\n  " + self.description + "\n </Description>\n"
+        content += " <Capabilities>\n  " + self.capabilities + "\n </Capabilities>\n"
+        content += " <OS>\n"
+        content += "  <Type>\n   " + self.os_type + "\n  </Type>\n"
+        content += "  <Distribution>\n   " + self.distribution + "\n  </Distribution>\n"
+        content += "  <Release>\n   " + self.release + "\n  </Release>\n"
+        content += "  <Kernel>\n   "  + self.kernel + "\n  </Kernel>\n"
+        content += "  <Packages>\n   " + self.packages + "\n  </Packages>\n"
+        content += " </OS>\n"
+        content += " <Repository>\n  " + self.repository + "\n </Repository>\n"
+        content += " <DeployInfo>\n"
+        content += "  <PerferedSettings>\n"
+        content += "   <Mem>\n    " + str(self.memory) + "\n   </Mem>\n"
+        content += "   <DiskSize>\n    " + str(self.disk) + "G\n   </DiskSize>\n"
+        content += "   <Config>\n"
+        content += "    <newconfig>\n     " + self.newconfig + "\n    </newconfig>\n"
+        content += "   </Config>\n"
+        content += "  </PerferedSettings>\n"
+        content += "  <Method>\n   " + self.deploy_method + "\n  </Method>\n"
+        content += "  <URL>\n   " + self.deploy_url + "\n  </URL>\n"
+        content += "  <COWDir>\n   " + self.cowdir + "\n  </COWDir>\n"
+        content += " </DeployInfo>\n"
+        content += "</vTemplate>"
+        filepath = os.path.join(LOCAL_XML_DIR, self.filename + '.xml')
+        fileobj = open(filepath,'w')
+        fileobj.write(content)
+        fileobj.close()
+        return content
 
-# use XML information and username to get hash code, used as the xml file name
-def hashFilename(dict):
-    dict_str = dict.copy()
-    dict_str['create_user'] = dict['create_user'].username
-    obj = hashlib.md5()
-    obj.update(str(dict_str))
-    hash = obj.hexdigest()
-    filename = hash[0:8]+'-'+hash[8:12]+'-'+hash[12:16]+'-'+hash[16:20]+'-'+hash[20:32]
-    return filename
 
-def exsit(filename):
-    try:
-         t = VMTemplate.objects.get(filename = filename)
-         if t is not None:
-              return True
-         return False
-    except:
-         return False
-
-def createNew(dict, filename):
-    try:
-        new_tp = VMTemplate.objects.create(name = dict['name'], description = dict['description'], capabilities = dict['capabilities'], os_type = dict['os_type'], distribution = dict['distribution'], release = dict['release'], kernel = dict['kernel'], packages = dict['packages'], repository = dict['repository'], memory = dict['memory'], disk = dict['disk'], deploy_method = dict['deploy_method'], deploy_url = dict['deploy_url'], cowdir = dict['cowdir'] ,create_user = dict['create_user'], filename = filename)
-        return new_tp
-    except:
-        return None
