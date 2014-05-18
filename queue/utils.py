@@ -34,6 +34,10 @@ def doreq(r):
     port = PP['port']
     msg = "4" #4 Ready
     sendToClient(sessionid, msg)
+    proxy = "192.168.1.109"
+    port = "10000"
+    msg = "http://" + proxy + ":" + port +"/vnc.html"
+    sendToClient(sessionid, msg)
     return {'sessionid':sessionid,'template':template,'vm':vm,'proxy':proxy,'port':port}
 
 def dodown(d):

@@ -16,7 +16,7 @@
     <div>
         <input type="submit" class="button1" value="Sign In" />
         <input type="hidden" name="next" value="{{ next|escape }}" />
-        <input type="button" class="button2" name="signup" id="signup" value="Sign Up" onclick="location.href='signup/'"/>
+        <input type="button" class="button2" name="signup" id="signup" value="Sign Up" onclick="location.href='{{site}}/signup/'"/>
     </div>
     <p style="font-size:11px;color:red">{{ msg }}</p>
 </form>

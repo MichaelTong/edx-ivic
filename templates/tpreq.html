@@ -7,8 +7,10 @@ REQUEST DEMO <a href="..">Back</a><br/>
 
 {% block content %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/ws4redis.js"></script>
+ 
 <script type="text/javascript">
     jQuery(document).ready(function($) {
+        var state = 0
         var ws4redis = WS4Redis({
             uri: '{{ WEBSOCKET_URI }}foobar?subscribe-session',
             receive_message: receiveMessage,
@@ -20,21 +22,68 @@ REQUEST DEMO <a href="..">Back</a><br/>
             $.post('',{ method: 'UP',template: '{{template.filename}}'});
         });
 
+        $('#new_window').click(function(){
+            document.frames('viewer').location.reload()
+        });
+
         function receiveMessage(msg){
-            if (msg == "1")
-                put = "Request received";
-            else if (msg == "2")
-                put = "Applying VM...";
-            else if (msg == "3")
-                put = "Applying Proxy...";
-            else if (msg == "4")
-                put = "Ready";
-            else 
-		put = "Error";
-            $('#billboard').append('<br/>'+put);
+            if (msg == "0"){
+                state = 0;
+                info = "Send Request";
+                document.getElementById("send_request").disabled=false;
+            	document.getElementById("send_request").innerHTML = info;
+                document.getElementById("send_request").setAttribute("class","button1");
+            }
+            else if (msg == "1"){
+                state = 1;
+                info = "Request received";
+                document.getElementById("send_request").disabled=true;
+            	document.getElementById("send_request").innerHTML = info;
+                document.getElementById("send_request").setAttribute("class","button_wait");
+            }
+            else if (msg == "2"){
+                state = 2;
+                info = "Applying VM...";
+            	document.getElementById("send_request").innerHTML = info;
+                document.getElementById("send_request").disabled=true;
+                document.getElementById("send_request").setAttribute("class","button_wait");
+            }
+            else if (msg == "3"){
+                state = 3;
+                info = "Applying Proxy...";
+            	document.getElementById("send_request").innerHTML = info;
+                document.getElementById("send_request").disabled=true;
+                document.getElementById("send_request").setAttribute("class","button_wait");
+            }
+            else if (msg == "4"){
+                state = 4;
+                info = "Ready";
+            	document.getElementById("send_request").innerHTML = info;
+                document.getElementById("send_request").disabled=true;
+                document.getElementById("send_request").setAttribute("class","button_ready");
+            }
+            else if (msg == "5"){
+                state = 5;
+		info = "Error, retry";
+                document.getElementById("send_request").disabled=false
+            	document.getElementById("send_request").innerHTML = info;
+                document.getElementById("send_request").setAttribute("class","button2");
+            }
+            else if (state == 4){
+                document.getElementById("viewer").setAttribute("src",msg);
+                var url = "";
+                url = "javascript:if(confirm('Please DISCONNECT on this page before you open a new page.')) window.open('"+ msg+"')"
+                document.getElementById("new_window").setAttribute("onclick",url);
+                document.getElementById("new_window").style.display='inline'; 
+            }
         }
     });
 </script>
-	<button id="send_request">Send Request</button>
-	<div id="billboard" style="margin: 10px;padding: 5px;	width: 600px;	height: 400px;	background-color: black;color: white;border: solid 2px green;overflow-y: auto;"></div>
+<div>
+	<button  id="send_request" class="button1" style="margin: 10px 10px;width:200px;">Send Request</button>
+        <button  id="new_window" class="button1" style="margin: 10px 10px;width:200px;display:None" onclick="">New Window</button>
+</div>
+<div>
+        <iframe id="viewer" name="viewer" src="{{ STATIC_URL }}/images/edxtoivic.jpg" width="700" height="500" allowfullscreen=""></iframe>
+</div>
 {% endblock %}

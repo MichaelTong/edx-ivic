@@ -85,7 +85,7 @@ a:hover
 {
 	margin-left: auto;
 	margin-right: auto;
-	overflow: hidden;
+
 	background: #2056ac;
 	width: 100%;
 	max-width: 1200px;
@@ -94,7 +94,7 @@ a:hover
 {
 	margin-left: auto;
 	margin-right: auto;
-	overflow: hidden;
+
 	padding: 0em 0em 7em 0em;
 	width: 100%;
 	background: #fff;
@@ -115,7 +115,7 @@ a:hover
 	max-width: 1200px ;
 	margin-left: auto;
 	margin-right: auto;
-	overflow: hidden;
+
 }
 #footer-wrapper
 {
@@ -125,7 +125,7 @@ a:hover
 {
 	margin-left: auto;
 	margin-right: auto;
-	overflow: hidden;
+
 	padding: 5em 0em;
 	text-align: center;
 	max-width: 1200px;
@@ -216,5 +216,37 @@ a:hover
 	color: #FFF;
 	padding: 0.3em;
 	
+}
+.button_wait {
+	width: 25%;
+	display: inline-block;
+	margin-right: 10%;
+	margin-left: 10%;	
+	margin-bottom: 1em;	
+	display: inline-block;
+	background: #DAA520;
+	line-height: 1.8em;
+	letter-spacing: 1px;
+	text-decoration: none;
+	font-size: 0.5em;
+	color: #FFF;
+	margin-top: 1em;
+	padding: 0.3em;
+}
+.button_ready {
+	width: 25%;
+	display: inline-block;
+	margin-right: 10%;
+	margin-left: 10%;	
+	margin-bottom: 1em;	
+	display: inline-block;
+	background: #008000;
+	line-height: 1.8em;
+	letter-spacing: 1px;
+	text-decoration: none;
+	font-size: 0.5em;
+	color: #FFF;
+	margin-top: 1em;
+	padding: 0.3em;
 }
 

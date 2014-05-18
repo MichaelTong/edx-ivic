@@ -161,7 +161,6 @@ def tphowto(request, username, tp):
 def tpreq(request, username, tp):
     user = request.user
     if request.method == 'POST':
-
         sessionid = request.COOKIES.get('sessionid')
         method = request.POST.get('method')
         template = request.POST.get('template')
@@ -176,9 +175,14 @@ def tpreq(request, username, tp):
         return HttpResponse('OK')
     else:
         try:
+            sessionid = request.COOKIES.get('sessionid')
+            redis_publisher = RedisPublisher(facility='foobar', sessions=[sessionid])
+            message = RedisMessage("0")# 0
+            redis_publisher.publish_message(message)
             template = VMTemplate.objects.get(create_user=user, filename = tp)
             return render(request, 'tpreq.html',{'username':username,'template':template})
-        except:
+        except Exception,e:
+            print e
             return render(request, 'showdenied.html',{'username':username})
 
 def signup(request):
