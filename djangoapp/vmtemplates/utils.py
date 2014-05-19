@@ -45,11 +45,15 @@ def loadFromRequest(request):
         disk = int(d)
     except:
         disk = 0
-    newconfig = request.POST.get('newconfig')
+    c = request.POST.get('cpu')
+    try:
+        cpu = int(c)
+    except:
+        cpu = 1
     deploy_method = request.POST.get('method')
     deploy_vstore = request.POST.get('vstore')
     create_user = request.user
-    return {'image':image,'name':name,'description':description,'capabilities':capabilities,'os_type':os_type,'distribution':distribution,'release':release,'kernel':kernel,'packages':packages,'repository':repository,'memory':memory,'disk':disk, 'newconfig':newconfig,'deploy_method':deploy_method,'deploy_vstore':deploy_vstore,'create_user':create_user}
+    return {'image':image,'name':name,'description':description,'capabilities':capabilities,'os_type':os_type,'distribution':distribution,'release':release,'kernel':kernel,'packages':packages,'repository':repository,'memory':memory,'disk':disk, 'cpu':cpu,'deploy_method':deploy_method,'deploy_vstore':deploy_vstore,'create_user':create_user}
 
 # use XML information and username to get hash code, used as the xml file name
 def hashFilename(dict):
@@ -74,7 +78,7 @@ def exsit(filename):
 
 def createNew(dict, filename):
     try:
-        new_tp = VMTemplate.objects.create(name = dict['name'], description = dict['description'], capabilities = dict['capabilities'], os_type = dict['os_type'], distribution = dict['distribution'], release = dict['release'], kernel = dict['kernel'], packages = dict['packages'], repository = dict['repository'], memory = dict['memory'], disk = dict['disk'], deploy_method = dict['deploy_method'], deploy_url = dict['deploy_url'], cowdir = dict['cowdir'] ,create_user = dict['create_user'], filename = filename)
+        new_tp = VMTemplate.objects.create(name = dict['name'], description = dict['description'], capabilities = dict['capabilities'], os_type = dict['os_type'], distribution = dict['distribution'], release = dict['release'], kernel = dict['kernel'], packages = dict['packages'], repository = dict['repository'], cpu = dict['cpu'], memory = dict['memory'], disk = dict['disk'], deploy_method = dict['deploy_method'], deploy_url = dict['deploy_url'], cowdir = dict['cowdir'] ,create_user = dict['create_user'], filename = filename, status = 0)
         new_tp.dumps()
         server = dict['deploy_vstore']
         localFile = os.path.join(LOCAL_XML_DIR, filename+'.xml')
@@ -82,6 +86,7 @@ def createNew(dict, filename):
         #remoteFile = '/var/lib/ivic/vstore/template/' + filename + '.xml'
     	#thread.start_new_thread(sendFile, (localFile, remoteFile, server, 22, VSTORE_USERNAME, VSTORE_PASSWD))  
         image = dict['image']
+        VMTemplate.objects.filter(filename = filename).update(status = 1) #transfer
         thread.start_new_thread(transferImage, (image, filename, server, 22, VSTORE_USERNAME, VSTORE_PASSWD))
         return new_tp
     except Exception,e:
@@ -134,6 +139,10 @@ def remoteCmd(server, port, username, passwd, Cmds):
     except:
         print '%s\tError\n'%(server)
 
+def destroyTemplate(filepath, server, port, username, passwd):
+    cmd = 'ivic-vstore destroy ' + filepath
+    remoteCmd(server, port, username, passwd, [cmd])
+
 def delLocal(filepath):
     os.system('rm '+filepath)
 
@@ -169,6 +178,7 @@ def getImages():
 def transferImage(image, filename, server, port, username, passwd):
     # TODO: Now the image store is the same as vstore.
     #       Only do copy.
+    t = VMTemplate.objects.filter(filename = filename)
     try:
         if server == IMG_STORE:
             c = createSSH(IMG_STORE, 22, IMG_USERNAME, IMG_PASSWD)
@@ -179,7 +189,18 @@ def transferImage(image, filename, server, port, username, passwd):
             origin = os.path.join(IMG_DIR, image)
             target = '/var/lib/ivic/www/vstore/nfsbase/' + filename +'.img'
             cmd = 'cp ' + origin + ' '+ target
-            print cmd
+            print 'Transfering image...\n'
+            stdin, stdout, stderr = c.exec_command(cmd)
+            out = stdout.readlines()
+            err = stderr.readlines()
+            for o in out:
+                sys.stdout.write(o)
+            for e in err:
+                sys.stderr.write(e)
+            print 'Transfer images to %s\tOK\n'%(server)
+            print 'Publishing template...\n'
+            t.update(status = 2) #publish
+            cmd = 'ivic-vstore publish /var/lib/ivic/www/vstore/template/'+ filename +'.xml'
             stdin, stdout, stderr = c.exec_command(cmd)
             out = stdout.readlines()
             err = stderr.readlines()
@@ -188,8 +209,9 @@ def transferImage(image, filename, server, port, username, passwd):
             for e in err:
                 sys.stderr.write(e)
             c.close()
-            print 'Transfer images to %s\tOK\n'%(server)
+            t.update(status = 3) #ready
     except Exception, e:
+        t.update(status = -1) #error
         print e
         print 'Transfer images to %s\tFailed\n'%(server)
 

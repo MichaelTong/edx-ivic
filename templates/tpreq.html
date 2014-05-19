@@ -27,54 +27,59 @@ REQUEST DEMO <a href="..">Back</a><br/>
         });
 
         function receiveMessage(msg){
-            if (msg == "0"){
+            if (msg == "0 {{ template.filename }}"){
                 state = 0;
                 info = "Send Request";
                 document.getElementById("send_request").disabled=false;
             	document.getElementById("send_request").innerHTML = info;
                 document.getElementById("send_request").setAttribute("class","button1");
+                document.getElementById("new_window").style.display='None'; 
             }
-            else if (msg == "1"){
+            else if (msg == "1 {{ template.filename }}"){
                 state = 1;
                 info = "Request received";
                 document.getElementById("send_request").disabled=true;
             	document.getElementById("send_request").innerHTML = info;
                 document.getElementById("send_request").setAttribute("class","button_wait");
             }
-            else if (msg == "2"){
+            else if (msg == "2 {{ template.filename }}"){
                 state = 2;
                 info = "Applying VM...";
             	document.getElementById("send_request").innerHTML = info;
                 document.getElementById("send_request").disabled=true;
                 document.getElementById("send_request").setAttribute("class","button_wait");
             }
-            else if (msg == "3"){
+            else if (msg == "3 {{ template.filename }}"){
                 state = 3;
                 info = "Applying Proxy...";
             	document.getElementById("send_request").innerHTML = info;
                 document.getElementById("send_request").disabled=true;
                 document.getElementById("send_request").setAttribute("class","button_wait");
             }
-            else if (msg == "4"){
+            else if (msg == "4 {{ template.filename }}"){
                 state = 4;
                 info = "Ready";
             	document.getElementById("send_request").innerHTML = info;
                 document.getElementById("send_request").disabled=true;
                 document.getElementById("send_request").setAttribute("class","button_ready");
             }
-            else if (msg == "5"){
+            else if (msg == "5 {{ template.filename }}"){
                 state = 5;
-		info = "Error, retry";
+                info = "Error, retry";
                 document.getElementById("send_request").disabled=false
             	document.getElementById("send_request").innerHTML = info;
                 document.getElementById("send_request").setAttribute("class","button2");
             }
             else if (state == 4){
-                document.getElementById("viewer").setAttribute("src",msg);
-                var url = "";
-                url = "javascript:if(confirm('Please DISCONNECT on this page before you open a new page.')) window.open('"+ msg+"')"
-                document.getElementById("new_window").setAttribute("onclick",url);
-                document.getElementById("new_window").style.display='inline'; 
+                var i = msg.indexOf("{{ template.filename }}")
+                if (i != -1){
+                    var vnc_url = msg.substr(37)
+                    document.getElementById("viewer").setAttribute("src",vnc_url);
+                    var url = "";
+                    url = "javascript:if(confirm('Please DISCONNECT on this page before you open a new page.')) window.open('"+ vnc_url+"')"
+                    document.getElementById("new_window").setAttribute("onclick",url);
+                    document.getElementById("new_window").style.display='inline'; 
+                }
             }
         }
     });
@@ -84,6 +89,6 @@ REQUEST DEMO <a href="..">Back</a><br/>
         <button  id="new_window" class="button1" style="margin: 10px 10px;width:200px;display:None" onclick="">New Window</button>
 </div>
 <div>
-        <iframe id="viewer" name="viewer" src="{{ STATIC_URL }}/images/edxtoivic.jpg" width="700" height="500" allowfullscreen=""></iframe>
+        <iframe id="viewer" name="viewer" src="{{ STATIC_URL }}/images/edxtoivic.jpg" width="700" height="500" allowfullscreen="yes"></iframe>
 </div>
 {% endblock %}

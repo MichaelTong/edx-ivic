@@ -14,7 +14,21 @@ MY TEMPLATES
            </ul>
            {% for template in templates.object_list %}
            <ul class = "t-item">
-             <li><a href="{{ site }}/profile/{{ username }}/template/{{ template.filename }}" ><b>{{ template.name }}</a></b></li> 
+             {% ifequal template.status 0 %}
+             <li><a href="{{ site }}/profile/{{ username }}/template/{{ template.filename }}" style = "color :#64ABD1;" ><b>{{ template.name }}</a></b></li>
+             {% endifequal %}
+             {% ifequal template.status 1 %}
+             <li><a href="{{ site }}/profile/{{ username }}/template/{{ template.filename }}" style = "color :#DAA520;"><b>{{ template.name }}</a></b></li>
+             {% endifequal %}
+             {% ifequal template.status 2 %}
+             <li><a href="{{ site }}/profile/{{ username }}/template/{{ template.filename }}" style = "color :#DAA520;"><b>{{ template.name }}</a></b></li>
+             {% endifequal %}
+             {% ifequal template.status 3 %}
+             <li><a href="{{ site }}/profile/{{ username }}/template/{{ template.filename }}" style = "color :#008000;"><b>{{ template.name }}</a></b></li>
+             {% endifequal %}
+             {% ifequal template.status -1 %}
+             <li><a href="{{ site }}/profile/{{ username }}/template/{{ template.filename }}" style = "color :#F00;"><b>{{ template.name }}</a></b></li>
+             {% endifequal %}
              <li>{{ template.os_type }}</li>
              <li>{{ template.distribution }}</li>
              <li>{{ template.deploy_method }}</li>

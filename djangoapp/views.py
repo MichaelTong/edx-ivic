@@ -74,14 +74,14 @@ def add(request):
 	    msg += 'Memory '
 	if rawDict['disk'] ==0 :
 	    msg += 'Disk '
-	if rawDict['newconfig']=='':
-	    rawDict['newconfig'] = 'something'
         if msg != '':
             msgDict = rawDict.copy()
             msgDict['msg']=msg+"need to be corrected!"
             msgDict['username']= user.username
             msgDict['vstores'] = VSTORES
             msgDict['methods'] = METHODS
+            msgDict['os_types'] = OS_TYPES
+            msgDict['distributions'] = DISTRIBUTIONS
             images = getImages()
             msgDict['images'] = images
             return render(request,'add.html',msgDict)
@@ -97,6 +97,8 @@ def add(request):
             msgDict['username'] = user.username
             msgDict['vstores'] = VSTORES
             msgDict['methods'] = METHODS
+            msgDict['os_types'] = OS_TYPES
+            msgDict['distributions'] = DISTRIBUTIONS
       	    images = getImages()
             msgDict['images'] = images
             return render(request, 'add.html', msgDict)
@@ -112,13 +114,15 @@ def add(request):
                 msgDict['username'] = user.username
                 msgDict['vstores'] = VSTORES
                 msgDict['methods'] = METHODS
+                msgDict['os_types'] = OS_TYPES
+                msgDict['distributions'] = DISTRIBUTIONS
         	images = getImages()
                 msgDict['images'] = images
                 return render(request, 'add.html', msgDict)
     else:
         t = get_template('add.html')
         images = getImages()
-        return render(request, 'add.html', {'images':images,'username':user.username,'methods':METHODS, 'vstores':VSTORES,'deploy_method':'nfsmount','packages':'base-files','capabilities':'<vNode/>','repository':'local','newconfig':'something'
+        return render(request, 'add.html', {'images':images,'username':user.username,'os_types':OS_TYPES,'distributions':DISTRIBUTIONS,'methods':METHODS, 'vstores':VSTORES,'deploy_method':'nfsmount','packages':'base-files','capabilities':'<vNode/>','repository':'local','newconfig':'something'
 })
 
 @login_required
@@ -133,8 +137,10 @@ def delete(request, username, tp):
         if template.deploy_method == 'nfsmount':
             end = url[6:].find('/')
             server = url[6:6+end]
+        remoteFilePath = '/var/lib/ivic/www/vstore/template/' + tp + '.xml'
+        thread.start_new_thread(destroyTemplate,(remoteFilePath,server, 22, VSTORE_USERNAME, VSTORE_PASSWD))
         remoteFilePath = '/var/lib/ivic/vstore/nfsbase/' + tp + '.img'
-        delLocal(localFilePath)
+        # delLocal(localFilePath)
         template.delete()
         # Use nfs, no need to delete remote file
         # thread.start_new_thread(delRemote,(remoteFilePath,server, 22, VSTORE_USERNAME, VSTORE_PASSWD))
@@ -165,7 +171,7 @@ def tpreq(request, username, tp):
         method = request.POST.get('method')
         template = request.POST.get('template')
         redis_publisher = RedisPublisher(facility='foobar', sessions=[sessionid])
-        message = RedisMessage("1")# 1 Request Recieved
+        message = RedisMessage("1 "+tp)# 1 Request Recieved
         redis_publisher.publish_message(message)
         msg = {'method':method,'sessionid':sessionid,'template':template}
         try:

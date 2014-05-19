@@ -33,7 +33,7 @@ class VMTemplate(models.Model):
     disk = models.IntegerField(verbose_name='Perferred Disk Size(GB, Only Int)')
     	# Config
             # newconfig
-    newconfig = models.CharField(max_length=100,default='something',verbose_name='NewConfig')
+    cpu = models.IntegerField(verbose_name='vCPU(Only Int)',default=1)
     # Method
     deploy_method = models.CharField(max_length=30, default='nfsmount', verbose_name='Deploy Method')
     # URL
@@ -45,9 +45,10 @@ class VMTemplate(models.Model):
     create_time = models.DateTimeField(default = datetime.datetime.now, verbose_name='Created Time')
     filename = models.CharField(max_length=64, blank=True, verbose_name='Filename') #Set as unique filename, and uuid. see hashFilename.
     create_user = models.ForeignKey(User, verbose_name='Creator')
+    status = models.IntegerField(default = 0)#0: created, 1:transfer, 2:publish, 3:ready, -1:error
 
     def dumps(self):
-        content = "<?xml version=\"1.0\" ?>"
+        content = "<?xml version=\"1.0\" ?>\n"
         content += "<vTemplate uuid=\"" + self.filename +"\">\n"
         content += " <Name>\n  " + self.name + "\n </Name>\n"
         content += " <Description>\n  " + self.description + "\n </Description>\n"
@@ -61,13 +62,11 @@ class VMTemplate(models.Model):
         content += " </OS>\n"
         content += " <Repository>\n  " + self.repository + "\n </Repository>\n"
         content += " <DeployInfo>\n"
-        content += "  <PerferedSettings>\n"
+        content += "  <PreferedSettings>\n"
+        content += "   <vCPU>\n     " + str(self.cpu) + "\n    </vCPU>\n"
         content += "   <Mem>\n    " + str(self.memory) + "\n   </Mem>\n"
         content += "   <DiskSize>\n    " + str(self.disk) + "G\n   </DiskSize>\n"
-        content += "   <Config>\n"
-        content += "    <newconfig>\n     " + self.newconfig + "\n    </newconfig>\n"
-        content += "   </Config>\n"
-        content += "  </PerferedSettings>\n"
+        content += "  </PreferedSettings>\n"
         content += "  <Method>\n   " + self.deploy_method + "\n  </Method>\n"
         content += "  <URL>\n   " + self.deploy_url + "\n  </URL>\n"
         content += "  <COWDir>\n   " + self.cowdir + "\n  </COWDir>\n"

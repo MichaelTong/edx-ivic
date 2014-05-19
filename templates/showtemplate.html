@@ -8,6 +8,23 @@ TEMPLATE DETAILS
         <div style="font: 12px">
             <table width="70%" border="0" >
               <tr>
+                <td><b>Status</b></td>
+                <td>{% ifequal template.status 0 %}
+                    <p style = "color :#64ABD1;" >Created</p>
+                    {% endifequal %}
+                    {% ifequal template.status 1 %}
+                    <p style = "color :#DAA520;" >Transfer</p>
+                    {% endifequal %}
+                    {% ifequal template.status 2 %}
+                    <p style = "color :#DAA520;" >Publish</p>
+                    {% endifequal %}
+                    {% ifequal template.status 3 %}
+                    <p style = "color :#008000;" >Ready</p>
+                    {% endifequal %}
+                    {% ifequal template.status -1 %}
+                    <p style = "color :#F00;" >Error</p>
+                    {% endifequal %}
+              <tr>
                 <td><b>Name</b></td>
                 <td>{{ template.name }}</td>
               </tr>
@@ -78,9 +95,11 @@ TEMPLATE DETAILS
             </table>
             </div>
             <div>
-            <a href="request/"><button class="button1" name="reqpage" id="reqpage">Show Request Page</button></a>
             <a href="howtoadd/"><button class="button1" name="addtocourse" id="addtocourse">Add to Course</button></a>
             <a href="{{ site }}/"><button class="button1" name="back" id="back">Back</button></a>
+            {% ifequal template.status 3 %}
+            <a href="request/"><button class="button1" name="reqpage" id="reqpage">Show Request Page</button></a>
             <a href="javascript:if(confirm('Are you sure to delete it?')) location='delete'"><input class="button2" type="button" name="deltp" id="deltp" value="Delete" /></a>
+            {% endifequal %}
             </div>
 {% endblock %}

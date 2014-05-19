@@ -130,3 +130,20 @@ IMG_USERNAME = 'root'
 IMG_PASSWD = 'tong'
 VSTORE_USERNAME = 'root'
 VSTORE_PASSWD = 'tong'
+OS_TYPES = (
+    'linux',
+    'windows',
+)
+DISTRIBUTIONS = (
+    'debain',
+    'windows-xp',
+    'redhat',
+    'windows2000',
+    'windows2003',
+    'windows2008',
+    'windows7',
+    'squeeze',
+    'centos',
+    'fedora',
+    'ubuntu',
+)

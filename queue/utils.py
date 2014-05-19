@@ -24,19 +24,20 @@ def doreq(r):
     sessionid = r.sessionid
     template = r.template
     redis_publisher = RedisPublisher(facility='foobar', sessions=[sessionid])
-    msg = "2" #2 Applying for VM...
+    msg = "2 "+template #2 Applying for VM...
     sendToClient(sessionid, msg)
     vm = startVM(template)
-    msg = "3" #3 Applying for Proxy...
+    msg = "3 "+template #3 Applying for Proxy...
     sendToClient(sessionid, msg)
     PP = startProxy(vm)
     proxy = PP['proxy']
     port = PP['port']
-    msg = "4" #4 Ready
+    msg = "4 "+template #4 Ready
     sendToClient(sessionid, msg)
     proxy = "192.168.1.109"
     port = "10000"
-    msg = "http://" + proxy + ":" + port +"/vnc.html"
+    msg =  template + " http://" + proxy + ":" + port +"/vnc.html"
+    print msg
     sendToClient(sessionid, msg)
     return {'sessionid':sessionid,'template':template,'vm':vm,'proxy':proxy,'port':port}
 

@@ -29,11 +29,17 @@ CREATE A NEW TEMPLATE
              </tr>
              <tr>
                  <td><b>OS Type</b></td>
-                 <td><input type="text" name="os_type" value="{{os_type}}" id="os_type" /></td>
+                 <td><select name="os_type" id="os_type"/>{% for os_type in os_types %}
+                         <option value = "{{ os_type }}">{% firstof os_type %}</option>
+                     {%endfor%}
+                     </select></td>
              </tr>
              <tr>
                  <td><b>Distribution</b></td>
-                 <td><input type="text" name="distribution" value="{{distribution}}" id="distribution" /></td>
+                 <td><select name="distribution" id="distribution"/>{% for distribution in distributions %}
+                         <option value = "{{ distribution }}">{% firstof distribution %}</option>
+                     {%endfor%}
+                     </select></td>
              </tr>
              <tr>
                  <td><b>Release</b></td>
@@ -52,16 +58,16 @@ CREATE A NEW TEMPLATE
                  <td><input type="text" name="repository" value="{{repository}}" id="repository" /></td>
              </tr>
              <tr>
+                 <td><b>vCPU (Default 1)</b></td>
+                 <td><input type="text" name="cpu" value="{{cpu}}" id="cpu" /></td>
+             </tr>
+             <tr>
                  <td><b>Perferred Memory (MB, Only integer)</b></td>
                  <td><input type="text" name="memory" value="{{memory}}" id="memory" /></td>
              </tr>
              <tr>
                  <td><b>Perferred Disk Size (GB, Only integer)</b></td>
                  <td><input type="text" name="disk" value="{{disk}}" id="disk" /></td>
-             </tr>
-             <tr>
-                 <td><b>NewConfig (Default 'something')</b></td>
-                 <td><input type="text" name="newconfig" value="{{newconfig}}" id="newconfig" /></td>
              </tr>
              <tr>
                  <td><b>Deploy Method</b></td>
