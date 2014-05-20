@@ -12,6 +12,7 @@ from ws4redis.redis_store import RedisMessage
 from ws4redis.publisher import RedisPublisher
 from djangoapp.settings import *
 from djangoapp.vmtemplates.utils import *
+import hashlib
 import thread
 
 def home(request):
@@ -180,16 +181,19 @@ def tpreq(request, username, tp):
             print e
         return HttpResponse('OK')
     else:
+        obj = hashlib.sha1()
+        obj.update(IVIC_PORTAL_PASSWD)
+        password = obj.hexdigest()
         try:
             sessionid = request.COOKIES.get('sessionid')
             redis_publisher = RedisPublisher(facility='foobar', sessions=[sessionid])
             message = RedisMessage("0")# 0
             redis_publisher.publish_message(message)
             template = VMTemplate.objects.get(create_user=user, filename = tp)
-            return render(request, 'tpreq.html',{'username':username,'template':template})
+            return render(request, 'tpreq.html',{'username':username,'template':template,'password':password})
         except Exception,e:
             print e
-            return render(request, 'showdenied.html',{'username':username})
+            return render(request, 'showdenied.html',{'username':username,'password':password})
 
 def signup(request):
    if request.method == 'POST':

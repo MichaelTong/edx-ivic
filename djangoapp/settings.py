@@ -112,11 +112,20 @@ QUEUE_PORT = '6000'
 AUTHKEY = 'listener'
 
 # Proxy Configuration
-PROXY = (
-)
+# TODO:Improve here to get more machines involved as proxy
+PROXY_APP = '/home/tong/noVNC/utils/launch.sh'
+PROXY = '192.168.1.231'
 
 
 # iVIC configuration
+IVIC_PORTAL_URL = 'http://192.168.1.160'
+IVIC_PORTAL_USER = 'edx-ivic@act.buaa.edu.cn'
+IVIC_PORTAL_PASSWD = 'edx-ivic'
+IVIC_DB_HOST = '192.168.1.160'
+IVIC_DB_USER = 'root'
+IVIC_DB_PASSWD = ''
+IVIC_DB_PORT = 3306
+
 METHODS = (
     'nfsmount',
 )

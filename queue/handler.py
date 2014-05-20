@@ -12,13 +12,19 @@ from utils import *
 
 ReqQueue = Queue()
 DownQueue = Queue()
-RunQueue = Queue()
+RunQueue = {}
 reqlock = thread.allocate_lock()
 downlock = thread.allocate_lock()
 runlock = thread.allocate_lock()
 
 
 def msg_handler(msg):
+    global ReqQueue
+    global DownQueue
+    global RunQueue
+    global reqlock
+    global downlock
+    global runlock
     if msg['method'] == 'SHUTSELF':
         return
     if msg['method'] == 'UP':
@@ -28,13 +34,9 @@ def msg_handler(msg):
         reqlock.acquire()
         ReqQueue.enqueue(r)
         reqlock.release()
-        # TODO: Tell the client now queuing
     if msg['method'] == 'DOWN':
         sessionid = msg['sessionid']
         template = msg['template']
-        proxy = msg['proxy']
-        port = msg['port']
-        vm = msg['vm']
         d = DownItem(sessionid=sessionid, template=template, vm = vm, proxy = proxy, port = port)
         downlock.acquire()
         DownQueue.enqueue(d)
@@ -60,8 +62,7 @@ class listen(threading.Thread):
                msg_handler(msg)
             except Exception, e:
                print e
-            finally:
-               conn.close()
+
         conn.close()
         listener.close()
 
@@ -80,19 +81,44 @@ class queue_handler(threading.Thread):
         self.thread_stop = False
     
     def run(self):
+        global ReqQueue
+        global DownQueue
+        global RunQueue
+        global reqlock
+        global downlock
+        global runlock
         log("Started queue handler thread #" + str(self.id))
         while not self.thread_stop:
+            # get a up request
             reqlock.acquire()
             if not ReqQueue.is_empty():
                 r = ReqQueue.dequeue()
             else:
                 r = None
             reqlock.release()
+
             if r is not None:
-                doreq(r)
-            # TODO: Record in RunQueue
-            #       Tell the client now Running
-            #       Redirect to noVNC page
+                # check if already running
+                runlock.acquire()
+                condition = RunQueue.has_key((r.sessionid,r.template))
+                runlock.release()
+                if condition:
+                    runlock.acquire()
+                    proxy_url, proxy_process, vcid =RunQueue[(r.sessionid,r.template)]
+                    runlock.release()
+                    msg = "6 "+r.template #6 Ready
+                    sendToClient(r.sessionid, msg)
+                    msg =  r.template + " " + proxy_url
+                    sendToClient(r.sessionid, msg)
+                    r = None
+                else:
+                    # not running, start a vm and record into RunQueue
+                    run = doreq(r)
+                    RunQueue = dict(RunQueue.items() + run.dict().items())
+                    print RunQueue
+                    runlock.release()
+            
+            #get a down request
             downlock.acquire()
             if not DownQueue.is_empty():
                 d = DownQueue.dequeue()

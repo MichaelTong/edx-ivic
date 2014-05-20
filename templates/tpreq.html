@@ -44,33 +44,47 @@ REQUEST DEMO <a href="..">Back</a><br/>
             }
             else if (msg == "2 {{ template.filename }}"){
                 state = 2;
-                info = "Applying VM...";
+                info = "Creating vCluster...";
             	document.getElementById("send_request").innerHTML = info;
                 document.getElementById("send_request").disabled=true;
                 document.getElementById("send_request").setAttribute("class","button_wait");
             }
             else if (msg == "3 {{ template.filename }}"){
                 state = 3;
-                info = "Applying Proxy...";
+                info = "Deploying vCluster...";
             	document.getElementById("send_request").innerHTML = info;
                 document.getElementById("send_request").disabled=true;
                 document.getElementById("send_request").setAttribute("class","button_wait");
             }
             else if (msg == "4 {{ template.filename }}"){
                 state = 4;
-                info = "Ready";
+                info = "VM Starting...";
+            	document.getElementById("send_request").innerHTML = info;
+                document.getElementById("send_request").disabled=true;
+                document.getElementById("send_request").setAttribute("class","button_wait");
+            }
+            else if (msg == "5 {{ template.filename }}"){
+                state = 5;
+                info = "VNC Client starting...";
+            	document.getElementById("send_request").innerHTML = info;
+                document.getElementById("send_request").disabled=true;
+                document.getElementById("send_request").setAttribute("class","button_wait");
+            }
+            else if (msg == "6 {{ template.filename }}"){
+                state = 6;
+                info = "READY";
             	document.getElementById("send_request").innerHTML = info;
                 document.getElementById("send_request").disabled=true;
                 document.getElementById("send_request").setAttribute("class","button_ready");
             }
-            else if (msg == "5 {{ template.filename }}"){
-                state = 5;
+            else if (msg == "-1 {{ template.filename }}"){
+                state = -1;
                 info = "Error, retry";
                 document.getElementById("send_request").disabled=false
             	document.getElementById("send_request").innerHTML = info;
                 document.getElementById("send_request").setAttribute("class","button2");
             }
-            else if (state == 4){
+            else if (state == 6){
                 var i = msg.indexOf("{{ template.filename }}")
                 if (i != -1){
                     var vnc_url = msg.substr(37)
@@ -79,6 +93,7 @@ REQUEST DEMO <a href="..">Back</a><br/>
                     url = "javascript:if(confirm('Please DISCONNECT on this page before you open a new page.')) window.open('"+ vnc_url+"')"
                     document.getElementById("new_window").setAttribute("onclick",url);
                     document.getElementById("new_window").style.display='inline'; 
+                    document.getElementById("password").style.display='inline'; 
                 }
             }
         }
@@ -87,6 +102,7 @@ REQUEST DEMO <a href="..">Back</a><br/>
 <div>
 	<button  id="send_request" class="button1" style="margin: 10px 10px;width:200px;">Send Request</button>
         <button  id="new_window" class="button1" style="margin: 10px 10px;width:200px;display:None" onclick="">New Window</button>
+        <p id="password" style="display:None;font-size:10px">Use {{ password }} to connect.</p>
 </div>
 <div>
         <iframe id="viewer" name="viewer" src="{{ STATIC_URL }}/images/edxtoivic.jpg" width="700" height="500" allowfullscreen="yes"></iframe>

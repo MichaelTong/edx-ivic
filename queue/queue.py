@@ -32,16 +32,14 @@ class DownItem(Item):
         tmp['port'] = self.port
         return tmp
 
-class RunItem(DownItem):
+class RunItem:
      "This is the definiation of running VM item, derived from item."
-     def __init__(self, sessionid, template, vm, proxy, port):
-         DownItem.__init__(self, sessionid, template, proxy, port)
-         self.vm = vm
+     def __init__(self, sessionid, template, proxy_url, proxy_process, vcid):
+         self.key = (sessionid, template)
+         self.value = (proxy_url, proxy_process, vcid)
      
      def dict(self):
-         tmp = DownItem.dict(self)
-         tmp['vm'] = self.vm
-         return tmp
+         return {self.key:self.value}
 
 class Queue:
      def __init__(self):
