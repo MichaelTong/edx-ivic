@@ -25,6 +25,16 @@ REQUEST DEMO <a href="..">Back</a><br/>
         $('#new_window').click(function(){
             document.frames('viewer').location.reload()
         });
+        
+
+        $(window).bind('beforeunload',function(){
+            if( state != 0)
+            {return ('Reloading or leaving this page will SHUT DOWN the VM you have got, CONFIRM?');}
+        });
+
+        $(window).bind('unload',function(){
+            $.post('',{ method: 'DOWN',template: '{{template.filename}}'});
+        });
 
         function receiveMessage(msg){
             if (msg == "0 {{ template.filename }}"){

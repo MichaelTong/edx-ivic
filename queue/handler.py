@@ -18,6 +18,12 @@ downlock = thread.allocate_lock()
 runlock = thread.allocate_lock()
 
 
+def shutdown():
+    log('Shutting down all the running VMs...')
+    for sd in RunQueue.values():
+        dodown(None,sd[1],sd[2])
+    return 'ok'
+
 def msg_handler(msg):
     global ReqQueue
     global DownQueue
@@ -37,7 +43,7 @@ def msg_handler(msg):
     if msg['method'] == 'DOWN':
         sessionid = msg['sessionid']
         template = msg['template']
-        d = DownItem(sessionid=sessionid, template=template, vm = vm, proxy = proxy, port = port)
+        d = DownItem(sessionid=sessionid, template=template)
         downlock.acquire()
         DownQueue.enqueue(d)
         downlock.release()
@@ -114,8 +120,8 @@ class queue_handler(threading.Thread):
                 else:
                     # not running, start a vm and record into RunQueue
                     run = doreq(r)
+                    runlock.acquire()
                     RunQueue = dict(RunQueue.items() + run.dict().items())
-                    print RunQueue
                     runlock.release()
             
             #get a down request
@@ -126,8 +132,19 @@ class queue_handler(threading.Thread):
                 d = None
             downlock.release()
             if d is not None:
-                dodown(d)
-            # TODO: Delete the record in RunQueue
+                # check if already shut down
+                runlock.acquire()
+                condition = RunQueue.has_key((d.sessionid,d.template))
+                runlock.release()
+                if not condition:
+                    d = None
+                else:
+                    # running, shut it down
+                    runlock.acquire()
+                    obj = RunQueue[(d.sessionid,d.template)]
+                    dodown(d=d,proxy_process=obj[1],vcid=obj[2])
+                    del RunQueue[(d.sessionid,d.template)]
+                    runlock.release()
     
     def stop(self):
         self.thread_stop = True

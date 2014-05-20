@@ -171,9 +171,10 @@ def tpreq(request, username, tp):
         sessionid = request.COOKIES.get('sessionid')
         method = request.POST.get('method')
         template = request.POST.get('template')
-        redis_publisher = RedisPublisher(facility='foobar', sessions=[sessionid])
-        message = RedisMessage("1 "+tp)# 1 Request Recieved
-        redis_publisher.publish_message(message)
+        if method == 'UP':
+            redis_publisher = RedisPublisher(facility='foobar', sessions=[sessionid])
+            message = RedisMessage("1 "+tp)# 1 Request Recieved
+            redis_publisher.publish_message(message)
         msg = {'method':method,'sessionid':sessionid,'template':template}
         try:
             sentToQueue(msg)

@@ -21,16 +21,6 @@ class ReqItem(Item):
 class DownItem(Item):
     "This is the definition of showdown queue item, derived from item."
 
-    def __init__(self, sessionid, template, proxy, port):
-        Item.__init__(self, sessionid, template)
-        self.proxy = proxy
-        self.port = port
-    
-    def dict(self):
-        tmp = Item.dict(self)
-        tmp['proxy'] = self.proxy
-        tmp['port'] = self.port
-        return tmp
 
 class RunItem:
      "This is the definiation of running VM item, derived from item."

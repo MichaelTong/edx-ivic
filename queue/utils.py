@@ -92,7 +92,7 @@ def doreq(r):
     proxy = PPP['proxy']
     port = PPP['port']
     process = PPP['process']
-    time.sleep(3)
+    time.sleep(2)# Change this to get better experience
     msg = "6 "+template #6 Ready
     sendToClient(sessionid, msg)
     msg =  template + " http://" + proxy + ":" + str(port) +"/vnc.html"
@@ -102,13 +102,42 @@ def doreq(r):
     run = RunItem(sessionid = sessionid, template = template, proxy_url = proxy_url, proxy_process = process, vcid = vcid)
     return run
 
-def dodown(d):
-    log('Processing DOWN request: ' + d.string())
-    return 'ok'
+def dodown(d, proxy_process, vcid):
+    if d is not None:
+        log('Processing DOWN request: ' + d.string())
+    proxy_process.terminate()
+    operator = ivicSpider()
+    operator.stopVCluster(vcid)
+    status = getVCStatus(vcid)
+    if status == 'invalid':
+        return -1
+    else:
+        while status != 'stopped':
+            time.sleep(1)
+            status = getVCStatus(vcid)
+    operator.undeployVCluster(vcid)
+    return 1
 
-def shutdown():
-    log('Shutting down all the running VMs...')
-    return 'ok'
+'''
+    status1 = getVCStatus(vcid)
+    status2 = getVMStatus(vmid)
+    secs = 0
+    if status1 == 'invalid':
+        return -1
+    else:
+        while status2 != 'stopped' and status1 != 'stopped':
+            time.sleep(1)
+            status1 = getVCStatus(vcid)
+    	    status2 = getVMStatus(vmid)
+            print status1, status2
+            secs +=1
+        #possibly, when down req arrives, the machine hasn't set up
+            if secs == 60:
+                operator.stopVCluster(vcid)
+                secs = 0
+'''
+
+
 
 
 def startProxy(vmport):

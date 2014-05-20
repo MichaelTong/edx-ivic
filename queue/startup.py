@@ -3,7 +3,6 @@ import thread
 import multiprocessing
 import signal
 from handler import *
-from utils import shutdown
 from multiprocessing.connection import Client
 
 def sigint_handler(signum, frame):

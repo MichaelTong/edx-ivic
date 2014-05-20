@@ -168,13 +168,13 @@ class ivicSpider():
 
     def stopVCluster(self, vcid):
         self.login()
-        undeploy_url =  IVIC_PORTAL_URL + '/vcluster/stop/' + str(vcid)
+        stop_url =  IVIC_PORTAL_URL + '/vcluster/stop/' + str(vcid)
         self.spider.urlopen(stop_url)
 
     def undeployVCluster(self, vcid):
         self.login()
         undeploy_url =  IVIC_PORTAL_URL + '/vcluster/undeploy/' + str(vcid)
-        self.spider.urlopen(stop_url)
+        self.spider.urlopen(undeploy_url)
 
     def getVMPort(self, vmid):
         self.login()
@@ -186,6 +186,10 @@ class ivicSpider():
         urlport = temp[:end]
         s = urlport.find(':')
         url = urlport[:s]
-        port = 5900+int(urlport[s+1:])
+        pp = urlport[s+1:]
+        if pp == '':
+           port = 5900
+        else:
+           port = 5900 + int(pp)
         return {'url':url, 'port':port}
 
